@@ -21,5 +21,6 @@ deploy:
     with:
       target: ./.localConfigs.playground
       envs:
-        OPENAI_API_KEY: ${{SECRET_OPENAI_API_KEY}}
+        DIFY_API_KEY: ${{DIFY_API_KEY}}
+        DIFY_BASE_URL: ${{DIFY_BASE_URL}}
         TEAMSFX_NOTIFICATION_STORE_FILENAME: ${{TEAMSFX_NOTIFICATION_STORE_FILENAME}}

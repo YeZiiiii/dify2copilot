@@ -1,6 +1,8 @@
 const config = {
-  openAIKey: process.env.OPENAI_API_KEY,
-  openAIModelName: "gpt-3.5-turbo",
+
+  // Dify configuration
+  difyApiKey: process.env.DIFY_API_KEY ,
+  difyBaseUrl: process.env.DIFY_BASE_URL 
 };
 
 module.exports = config;

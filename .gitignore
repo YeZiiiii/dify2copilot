@@ -1,7 +1,4 @@
 # TeamsFx files
-env/.env.*.user
-env/.env.local
-env/.env.sandbox
 .localConfigs
 .localConfigs.playground
 .localConfigs
@@ -13,7 +10,7 @@ appPackage/build
 node_modules/
 
 # misc
-.env
+env/.env.*
 .deployment
 .DS_Store
 

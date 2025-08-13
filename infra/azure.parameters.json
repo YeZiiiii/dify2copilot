@@ -5,14 +5,11 @@
     "resourceBaseName": {
       "value": "bot${{RESOURCE_SUFFIX}}"
     },
-    "openAIKey": {
-      "value": "${{SECRET_OPENAI_API_KEY}}"
-    },
     "webAppSKU": {
       "value": "B1"
     },
     "botDisplayName": {
-      "value": "agentoriginal"
+      "value": "agent"
     }
   }
 }

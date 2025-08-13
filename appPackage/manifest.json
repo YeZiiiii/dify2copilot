@@ -14,12 +14,12 @@
         "outline": "outline.png"
     },
     "name": {
-        "short": "agentoriginal${{APP_NAME_SUFFIX}}",
-        "full": "full name for agentoriginal"
+        "short": "agent${{APP_NAME_SUFFIX}}",
+        "full": "full name for agent"
     },
     "description": {
-        "short": "short description for agentoriginal",
-        "full": "full description for agentoriginal"
+        "short": "short description for agent",
+        "full": "full description for agent"
     },
     "accentColor": "#FFFFFF",
     "copilotAgents": {
