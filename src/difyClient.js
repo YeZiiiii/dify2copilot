@@ -11,11 +11,11 @@ class DifyClient {
     }
 
     /**
-     * 发送消息到 Dify API (流式模式)
+     * 发送消息到 Dify API (非流式模式，返回完整结果)
      * @param {string} query - 用户输入的问题
      * @param {string} userId - 用户标识
      * @param {string} conversationId - 可选的会话ID
-     * @returns {Promise<string>} - 完整的回答
+     * @returns {Promise<Object>} - 完整的回答对象
      */
     async sendMessage(query, userId = 'teams-user', conversationId = null) {
         const url = `${this.baseUrl}/chat-messages`;
@@ -28,7 +28,6 @@ class DifyClient {
             auto_generate_name: true
         };
 
-        // 如果有会话ID，添加到请求中
         if (conversationId) {
             payload.conversation_id = conversationId;
         }
@@ -44,13 +43,21 @@ class DifyClient {
                 let fullAnswer = '';
                 let currentConversationId = conversationId;
                 let messageId = null;
+                let buffer = ''; // 缓冲区处理不完整数据
 
                 response.data.on('data', (chunk) => {
-                    const lines = chunk.toString().split('\n');
+                    // 将新数据添加到缓冲区
+                    buffer += chunk.toString();
+                    
+                    // 处理完整的行
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop(); // 保留最后一个不完整的行
                     
                     for (const line of lines) {
                         if (line.startsWith('data: ')) {
-                            const dataStr = line.substring(6);
+                            const dataStr = line.substring(6).trim();
+                            if (!dataStr) continue;
+                            
                             try {
                                 const data = JSON.parse(dataStr);
                                 const event = data.event;
@@ -61,7 +68,6 @@ class DifyClient {
                                     currentConversationId = data.conversation_id || currentConversationId;
                                     messageId = data.message_id || messageId;
                                 } else if (event === 'message_end') {
-                                    // 消息结束，返回完整回答
                                     resolve({
                                         answer: fullAnswer,
                                         conversationId: currentConversationId,
@@ -116,6 +122,112 @@ class DifyClient {
             throw new Error(`Dify API 调用失败: ${error.message}`);
         }
     }
+
+    // /**
+    //  * 获取流式响应（用于实时显示）
+    //  * @param {string} query - 用户输入的问题
+    //  * @param {string} userId - 用户标识
+    //  * @param {string} conversationId - 可选的会话ID
+    //  * @param {Function} onChunk - 收到数据块时的回调函数
+    //  * @returns {Promise<Object>} - 最终结果
+    //  */
+    // async getStreamingResponse(query, userId = 'teams-user', conversationId = null, onChunk = null) {
+    //     const url = `${this.baseUrl}/chat-messages`;
+        
+    //     const payload = {
+    //         inputs: {},
+    //         query: query,
+    //         response_mode: 'streaming',
+    //         user: userId,
+    //         auto_generate_name: true
+    //     };
+
+    //     if (conversationId) {
+    //         payload.conversation_id = conversationId;
+    //     }
+
+    //     try {
+    //         const response = await axios.post(url, payload, {
+    //             headers: this.headers,
+    //             responseType: 'stream',
+    //             timeout: 120000
+    //         });
+
+    //         return new Promise((resolve, reject) => {
+    //             let fullAnswer = '';
+    //             let currentConversationId = conversationId;
+    //             let messageId = null;
+    //             let buffer = ''; // 缓冲区处理不完整数据
+
+    //             response.data.on('data', (chunk) => {
+    //                 // 将新数据添加到缓冲区
+    //                 buffer += chunk.toString();
+                    
+    //                 // 处理完整的行
+    //                 const lines = buffer.split('\n');
+    //                 buffer = lines.pop(); // 保留最后一个不完整的行
+                    
+    //                 for (const line of lines) {
+    //                     if (line.startsWith('data: ')) {
+    //                         const dataStr = line.substring(6).trim();
+    //                         if (!dataStr) continue;
+                            
+    //                         try {
+    //                             const data = JSON.parse(dataStr);
+    //                             const event = data.event;
+
+    //                             if (event === 'message' || event === 'agent_message') {
+    //                                 const answerChunk = data.answer || '';
+    //                                 fullAnswer += answerChunk;
+    //                                 currentConversationId = data.conversation_id || currentConversationId;
+    //                                 messageId = data.message_id || messageId;
+                                    
+    //                                 // 调用回调函数，传递当前累积的完整文本
+    //                                 if (onChunk && answerChunk) {
+    //                                     onChunk(fullAnswer, answerChunk);
+    //                                 }
+    //                             } else if (event === 'message_end') {
+    //                                 resolve({
+    //                                     answer: fullAnswer,
+    //                                     conversationId: currentConversationId,
+    //                                     messageId: messageId,
+    //                                     usage: data.metadata?.usage
+    //                                 });
+    //                                 return;
+    //                             } else if (event === 'error') {
+    //                                 reject(new Error(`Dify API Error: ${data.message}`));
+    //                                 return;
+    //                             }
+    //                         } catch (parseError) {
+    //                             // 忽略无法解析的行
+    //                             continue;
+    //                         }
+    //                     }
+    //                 }
+    //             });
+
+    //             response.data.on('end', () => {
+    //                 if (fullAnswer) {
+    //                     resolve({
+    //                         answer: fullAnswer,
+    //                         conversationId: currentConversationId,
+    //                         messageId: messageId
+    //                     });
+    //                 } else {
+    //                     reject(new Error('No response received from Dify API'));
+    //                 }
+    //             });
+
+    //             response.data.on('error', (error) => {
+    //                 reject(error);
+    //             });
+    //         });
+
+    //     } catch (error) {
+    //         console.error('Dify API request failed:', error.response?.data || error.message);
+    //         throw new Error(`Dify API 调用失败: ${error.message}`);
+    //     }
+    // }
 
     /**
      * 健康检查 - 发送简单消息测试连接

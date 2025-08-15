@@ -6,7 +6,6 @@ const DifyClient = require("./difyClient");
 
 // Initialize AI clients based on configuration
 let aiClient;
-let systemPrompt = "You are an AI agent that can chat with users.";
 
   console.log('🤖 Using Dify AI Engine');
   aiClient = new DifyClient(config.difyApiKey, config.difyBaseUrl);
@@ -44,35 +43,38 @@ agentApp.activity(ActivityTypes.Message, async (context) => {
     
     console.log(`📝 User ${userId}: ${userMessage}`);
     
-    let answer = "";
+    // 发送"正在思考"状态
+    await context.sendActivity({ type: ActivityTypes.Typing });
     
-      // Use Dify API
-      console.log('🚀 Processing with Dify API...');
+    // Use Dify API
+    console.log('🚀 Processing with Dify API...');
+    
+    // Get or create conversation ID for this user
+    const conversationId = userConversations.get(userId);
+    
+    try {
+      // 直接使用完整响应，避免复杂的流式处理
+      const result = await aiClient.sendMessage(userMessage, userId, conversationId);
       
-      // Get or create conversation ID for this user
-      const conversationId = userConversations.get(userId);
-      
-      try {
-        const result = await aiClient.sendMessage(userMessage, userId, conversationId);
-        answer = result.answer;
-        
-        // Store conversation ID for future messages
-        if (result.conversationId) {
-          userConversations.set(userId, result.conversationId);
-          console.log(`💾 Stored conversation ID for user ${userId}: ${result.conversationId}`);
-        }
-        
-        // Log usage statistics if available
-        if (result.usage) {
-          console.log(`📊 Usage - Tokens: ${result.usage.total_tokens}, Cost: ${result.usage.total_price} ${result.usage.currency}`);
-        }
-        
-      } catch (difyError) {
-        console.error('❌ Dify API error:', difyError.message);
+      // Store conversation ID for future messages
+      if (result.conversationId) {
+        userConversations.set(userId, result.conversationId);
+        console.log(`💾 Stored conversation ID for user ${userId}: ${result.conversationId}`);
       }
-    
-    console.log(`🤖 Response: ${answer}`);
-    await context.sendActivity(answer);
+      
+      // Log usage statistics if available
+      if (result.usage) {
+        console.log(`📊 Usage - Tokens: ${result.usage.total_tokens}, Cost: ${result.usage.total_price} ${result.usage.currency}`);
+      }
+      
+      // 直接发送完整响应
+      await context.sendActivity(result.answer);
+      console.log(`🤖 Response: ${result.answer}`);
+      
+    } catch (difyError) {
+      console.error('❌ Dify API error:', difyError.message);
+      await context.sendActivity("很抱歉，处理您的消息时遇到了错误，请稍后重试。");
+    }
     
   } catch (error) {
     console.error('❌ Error processing message:', error);
