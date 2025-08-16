@@ -21,10 +21,30 @@
     或者直接[download](https://github.com/YeZiiiii/dify2copilot/archive/refs/heads/main.zip)，解压后在VS Code中打开。
 
 2. **获取Dify Agent API Key**
-在Dify Workspace中，选择“创建空白应用”![](img/1.png)应用类型选择“Agent”，填写应用的信息，点击创建。![](img/2.png)
-创建完成后，您可以进一步微调Agent并在右边测试效果，右上角模型选择gpt3.5-turbo-16k，然后点击右上角的“发布”。![](img/3.png)
-发布后，点击左侧边栏Agent图标![](img/4.png)
-点击“API密钥”![](img/5.png)创建密钥，格式为“app-xxxxxxxxx”，复制保存密钥。![](img/6.png)
+   在Dify Workspace中，选择“创建空白应用”
+
+   ![](img/1.png)
+
+   应用类型选择“Agent”，填写应用的信息，点击创建。
+
+   ![](img/2.png)
+
+   创建完成后，您可以进一步微调Agent并在右边测试效果，右上角模型选择gpt3.5-turbo-16k，然后点击右上角的“发布”。
+
+   ![](img/3.png)
+
+
+   发布后，点击左侧边栏Agent图标
+
+   ![](img/4.png)
+
+   点击“API密钥”
+
+   ![](img/5.png)
+
+   创建密钥，格式为“app-xxxxxxxxx”，复制保存密钥。
+
+   ![](img/6.png)
 
 3. **配置环境变量**
    替换/env文件夹中的六个.env.*文件中的DIFY_API_KEY为上一步复制的API密钥。
@@ -35,9 +55,14 @@
 
 4. **运行项目**
    M365 Agent Toolkit配置了调试和任务脚本，可以在 VS Code 左侧的“运行和调试”面板中直接点击一键启动调试。选择Debug in Microsoft365 agents playground，点击启动调试。
+
    ![](img/8.png)
+
    在playground中测试后，然后我们将应用在Teams中启动，首先在M365 Agent Toolkit侧边栏面板中，登录允许上传自定义应用的微软账号，然后回到启动与调试面板，选择Debug in Teams(Edge)，启动调试。
-   ![](img/8.png)![](img/9.png)
+
+   ![](img/9.png)
+
+   ![](img/10.png)!
 
 ## 核心代码结构
 
