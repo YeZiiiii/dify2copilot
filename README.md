@@ -64,6 +64,8 @@
 
    ![](img/10.png)!
 
+   如果无法自动上传Teams应用，可以参考[文档](https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/deploy-and-publish/apps-upload#upload-your-app)手动将appPackage/build文件夹中的zip包上传到Teams。
+
 ## 核心代码结构
 
 ```
