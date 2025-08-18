@@ -69,7 +69,7 @@
 ```
 src/
 ├── agent.js          # Main agent implementation
-├── difyClient.js     # Dify API client
+├── difyClient.js     # Dify API client（Streaming）
 ├── config.js         # Configuration management
 ├── adapter.js        # Teams adapter
 └── index.js          # Application entry point
@@ -95,4 +95,5 @@ See [Microsoft 365 Agents SDK documentation](https://learn.microsoft.com/en-us/m
 
 - 资源部署上Azure并发布在Teams
 - Dify其他应用集成
+- 优化输出UX 采用流式响应
 
