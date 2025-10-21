@@ -106,4 +106,5 @@ See [Microsoft 365 Agents SDK documentation](https://learn.microsoft.com/en-us/m
 - 资源部署上Azure并发布在Teams
 - Dify其他应用集成
 - 优化输出UX 采用流式响应
+- 欢迎大家贡献优化建议，don't hesitate to ping me on Teams/email!
 
