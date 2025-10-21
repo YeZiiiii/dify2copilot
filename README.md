@@ -66,6 +66,14 @@
 
    如果无法自动上传Teams应用，可以参考[文档](https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/deploy-and-publish/apps-upload#upload-your-app)手动将appPackage/build文件夹中的zip包上传到Teams。
 
+
+   效果展示： 在Teams聊天中，输入消息，调用Dify Agent模型进行响应。效果如图：
+
+   ![](img/11.png)
+
+   进行回复的是股票分析Agent，这和我们在Dify中创建的agent是一致的。
+
+   ![](img/12.png)
 ## 核心代码结构
 
 ```
